@@ -5,6 +5,6 @@ router.route("/register").post(register)
 
 router.route("/login").post(login)
 
-router.route("/setAvatar/:id").post(setAvatar)
+router.route("/setAvatar/:gender/:id").get(setAvatar)
 
 module.exports = router

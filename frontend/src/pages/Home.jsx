@@ -4,7 +4,7 @@ import chat_illustration from "../assets/chat_illustration.png";
 
 const Home = () => {
   return (
-    <div className="bg-gradient-to-r from-violet-200 to-pink-200 min-h-screen flex flex-col justify-center items-center">
+    <div className="bg-gradient-to-tr from-violet-500 to-orange-300 min-h-screen flex flex-col justify-center items-center">
       <h1 className="text-4xl font-bold text-center mb-8 text-black">
         Welcome to Chat App
       </h1>

@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
         min: 8,
         max: 12
     },
+    gender: {
+        type: String,
+        required: true,
+        enum: ['male', 'female', 'other']
+    },
     isAvatarImageSet: {
         type: Boolean,
         default: false,

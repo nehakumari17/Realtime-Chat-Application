@@ -30,25 +30,25 @@ const Register = () => {
 
     if (user.password !== user.confirmPassword) {
       toast.error("Password and confirm password should match", {
-        position: "top-left"
+        position: "top-left",
       });
       isValid = false;
     }
     if (user.username.length < 3) {
       toast.error("Username should be greater than 3 characters.", {
-        position: "top-left"
+        position: "top-left",
       });
       isValid = false;
     }
     if (user.password.length < 8) {
       toast.error("Password should be equal or greater than 8 characters.", {
-        position: "top-left"
+        position: "top-left",
       });
       isValid = false;
     }
     if (user.email === "") {
       toast.error("Email is required.", {
-        position: "top-left"
+        position: "top-left",
       });
       isValid = false;
     }
@@ -71,7 +71,7 @@ const Register = () => {
         navigate("/login");
       } else {
         toast.error("Unexpected error occurred. Please try again later.", {
-          position: "top-left"
+          position: "top-left",
         });
       }
     } catch (error) {
@@ -81,27 +81,33 @@ const Register = () => {
           error.response.data.message === "User already exists with this email"
         ) {
           toast.error("User already exists with this email.", {
-            position: "top-left"
+            position: "top-left",
           });
         } else {
           toast.error("Unexpected error occurred. Please try again later.", {
-            position: "top-left"
+            position: "top-left",
           });
         }
       } else if (error.request) {
-        toast.error("No response received from server. Please check your internet connection.", {
-          position: "top-left"
-        });
+        toast.error(
+          "No response received from server. Please check your internet connection.",
+          {
+            position: "top-left",
+          }
+        );
       } else {
         toast.error("An unexpected error occurred. Please try again later.", {
-          position: "top-left"
+          position: "top-left",
         });
       }
     }
-};
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-violet-200 to-pink-200 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style={{backgroundColor:" #FAACA8",
+      backgroundImage: "linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%)"
+      
+      }}>
       <Toaster />
       <div className="p-8 rounded-lg max-w-md w-full shadow-2xl">
         <div className="flex justify-center">
@@ -111,7 +117,7 @@ const Register = () => {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleRegister}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md -space-y-px">
             <div>
               <input
                 id="username"
@@ -169,7 +175,7 @@ const Register = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2"
+              className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-lg px-7 py-3 text-center me-2 mb-2 uppercase tracking-wide"
             >
               Sign up
             </button>
