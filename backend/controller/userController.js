@@ -5,7 +5,7 @@ const JWT = require("jsonwebtoken")
 
 const register = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, gender } = req.body;
 
         const usernameCheck = await userModel.findOne({ username });
         if (usernameCheck) {
@@ -19,7 +19,8 @@ const register = async (req, res) => {
 
         const salt = bcrypt.genSaltSync(10);
         const hashPassword = bcrypt.hashSync(password, salt);
-        const newUser = new userModel({ username, email, password: hashPassword });
+
+        const newUser = new userModel({ username, email, password: hashPassword, gender });
         await newUser.save();
 
         res.status(200).json({ message: "Sign up successful", success: true });
@@ -52,41 +53,40 @@ const login = async (req, res) => {
 
 const setAvatar = async (req, res) => {
     try {
-        const { gender, id } = req.params;
+        const userId = req.params.id;
+        console.log('User ID from request params:', userId);
+        if (!userId) {
+            res.status(400).json({ error: 'User ID not found in request.' });
+            return;
+        }
         
-        // Construct the URL for fetching the avatar based on gender and id
-        const avatarUrl = gender === 'male'
-            ? `https://avatar.iran.liara.run/public/boy/${id}`
-            : `https://avatar.iran.liara.run/public/girl/${id}`;
-        
-        // Fetch the avatar from the URL
-        const response = await fetch(avatarUrl);
-
-        // Check if the request was successful
-        if (!response.ok) {
-            if (response.status === 404) {
-                // Return a 404 response if the avatar is not found
-                return res.status(404).send('Avatar not found');
-            } else {
-                // Throw an error for other response statuses
-                throw new Error(`Request failed with status ${response.status}`);
-            }
+        const avatarImage = req.body.image;
+        if (!avatarImage) {
+            res.status(400).json({ error: 'Avatar image not provided.' });
+            return;
         }
 
-        // Convert response to array buffer and then to base64
-        const buffer = await response.arrayBuffer();
-        const imageData = Buffer.from(buffer).toString('base64');
-        const base64Image = `data:image/jpeg;base64,${imageData}`;
-        
-        // Send the base64-encoded image as the response
-        res.send({ avatar: base64Image });
+        const userData = await userModel.findByIdAndUpdate(
+            userId,
+            {
+                isAvatarImageSet: true,
+                avatarImage,
+            },
+            { new: true }
+        );
+        if (!userData) {
+            res.status(404).json({ error: 'User not found.' });
+            return;
+        }
+        res.json({
+            isSet: userData.isAvatarImageSet,
+            image: userData.avatarImage,
+        });
     } catch (error) {
-        console.error('Error fetching avatar:', error.message);
-        // Return a 500 error response in case of any server-side error
-        res.status(500).send('Internal Server Error');
+        console.error('Error in setAvatar:', error);
+        res.status(500).json({ error: 'Internal server error.' });
     }
 };
-
 
 
 

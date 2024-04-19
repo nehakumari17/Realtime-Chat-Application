@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,8 +12,19 @@ import Chat from "./pages/Chat";
 import PublicRoute from "./authentication/PublicRoute";
 import ProtectedRoute from "./authentication/ProtectedRoute";
 import SetAvatar from "./pages/SetAvatar";
+import { useDispatch } from "react-redux";
+import { login } from "./authentication/authSlice";
 
 function App() {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      dispatch(login({token}));
+    }
+  }, [dispatch]);
+
   return (
     <Router>
       <Routes>
