@@ -52,7 +52,7 @@ const login = async (req, res) => {
             user.failedLoginAttempts = 0;
             await user.save();
 
-            const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, {
+            const token = JWT.sign({ id: user._id, gender: user.gender, isAvatarImageSet: user.isAvatarImageSet }, process.env.JWT_SECRET, {
                 expiresIn: '1h'
             });
             res.cookie('token', token, {
@@ -68,7 +68,8 @@ const login = async (req, res) => {
                     email: user.email,
                     username: user.username,
                     gender: user.gender
-                }
+                },
+                token
             });
         }
     } catch (error) {
@@ -81,6 +82,7 @@ const login = async (req, res) => {
 const setAvatar = async (req, res) => {
     try {
         const userId = req.params.id;
+        const {gender} = req.body
         console.log('User ID from request params:', userId);
         if (!userId) {
             res.status(400).json({ error: 'User ID not found in request.' });
@@ -96,6 +98,7 @@ const setAvatar = async (req, res) => {
         const userData = await userModel.findByIdAndUpdate(
             userId,
             {
+                gender,
                 isAvatarImageSet: true,
                 avatarImage,
             },

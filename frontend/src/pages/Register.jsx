@@ -10,8 +10,12 @@ const Register = () => {
     username: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    gender: ""
   });
+
+  const [gender, setGender] = useState("male");
+
   const navigate = useNavigate();
 
   const handleInput = (e) => {
@@ -24,32 +28,28 @@ const Register = () => {
     });
   };
 
+  const handleGenderChange = (newGender) => {
+    setGender(newGender);
+  }
+
   const handleRegister = async (e) => {
     e.preventDefault();
     let isValid = true;
 
     if (user.password !== user.confirmPassword) {
-      toast.error("Password and confirm password should match", {
-        position: "top-left",
-      });
+      toast.error("Password and confirm password should match");
       isValid = false;
     }
     if (user.username.length < 3) {
-      toast.error("Username should be greater than 3 characters.", {
-        position: "top-left",
-      });
+      toast.error("Username should be greater than 3 characters.");
       isValid = false;
     }
     if (user.password.length < 8) {
-      toast.error("Password should be equal or greater than 8 characters.", {
-        position: "top-left",
-      });
+      toast.error("Password should be equal or greater than 8 characters.");
       isValid = false;
     }
     if (user.email === "") {
-      toast.error("Email is required.", {
-        position: "top-left",
-      });
+      toast.error("Email is required.");
       isValid = false;
     }
 
@@ -60,19 +60,21 @@ const Register = () => {
     try {
       const response = await axios.post(registerRoute, user);
       if (response.status === 200) {
+
         setUser({
           name: "",
           email: "",
           password: "",
         });
+
         toast.success("Registration Successful!", {
           icon: "👏",
         });
+
         navigate("/login");
+
       } else {
-        toast.error("Unexpected error occurred. Please try again later.", {
-          position: "top-left",
-        });
+        toast.error("Unexpected error occurred. Please try again later.");
       }
     } catch (error) {
       if (error.response) {
@@ -80,25 +82,15 @@ const Register = () => {
           error.response.status === 400 &&
           error.response.data.message === "User already exists with this email"
         ) {
-          toast.error("User already exists with this email.", {
-            position: "top-left",
-          });
+          toast.error("User already exists with this email.");
         } else {
-          toast.error("Unexpected error occurred. Please try again later.", {
-            position: "top-left",
-          });
+          toast.error("Unexpected error occurred. Please try again later.");
         }
       } else if (error.request) {
         toast.error(
-          "No response received from server. Please check your internet connection.",
-          {
-            position: "top-left",
-          }
-        );
+          "No response received from server. Please check your internet connection.");
       } else {
-        toast.error("An unexpected error occurred. Please try again later.", {
-          position: "top-left",
-        });
+        toast.error("An unexpected error occurred. Please try again later.");
       }
     }
   };
@@ -108,7 +100,7 @@ const Register = () => {
       backgroundImage: "linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%)"
       
       }}>
-      <Toaster />
+      <Toaster position="top-left" />
       <div className="p-8 rounded-lg max-w-md w-full shadow-2xl">
         <div className="flex justify-center">
           <img src={logo} alt="chat app logo" className="w-20 h-auto mr-2" />
@@ -169,6 +161,32 @@ const Register = () => {
                 value={user.confirmPassword}
                 onChange={handleInput}
               />
+            </div>
+            <div className="flex gap-20 text-lg justify-center pt-2">
+              <div>
+                <input
+                  type="radio"
+                  id="male"
+                  name="gender"
+                  value="male"
+                  checked={gender === "male"}
+                  onChange={() => handleGenderChange("male")}
+                  className="mx-2"
+                />
+                <label htmlFor="male">Male</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="female"
+                  name="gender"
+                  value="female"
+                  checked={gender === "female"}
+                  onChange={() => handleGenderChange("female")}
+                  className="mx-2"
+                />
+                <label htmlFor="female">Female</label>
+              </div>
             </div>
           </div>
 

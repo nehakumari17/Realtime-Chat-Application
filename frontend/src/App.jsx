@@ -14,6 +14,7 @@ import ProtectedRoute from "./authentication/ProtectedRoute";
 import SetAvatar from "./components/SetAvatar";
 import { useDispatch } from "react-redux";
 import { login } from "./authentication/authSlice";
+import Welcome from "./components/Welcome";
 
 function App() {
   const dispatch = useDispatch()
@@ -44,6 +45,14 @@ function App() {
             <PublicRoute>
               <Login />
             </PublicRoute>
+          }
+        />
+        <Route
+          path="/welcome"
+          element={
+            <ProtectedRoute>
+              <Welcome />
+            </ProtectedRoute>
           }
         />
         <Route

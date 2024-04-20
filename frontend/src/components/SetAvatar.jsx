@@ -13,12 +13,16 @@ const SetAvatar = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
-  const [gender, setGender] = useState("male");
   const [avatars, setAvatars] = useState([]);
 
   const fetchAvatars = async () => {
     try {
       setIsLoading(true);
+      const token = localStorage.getItem("token");
+        const decodedToken = jwtDecode(token);
+        const gender = decodedToken.gender;
+        console.log(decodedToken)
+        console.log(gender)
       const apiUrl = gender === "male" ? maleApi : femaleApi;
       const promises = Array.from({ length: 4 }, async () => {
         const response = await fetch(apiUrl);
@@ -43,14 +47,10 @@ const SetAvatar = () => {
     fetchAvatars();
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 4000);
     return () => clearTimeout(loadingTimeout);
-  }, [gender]);
+  }, []);
 
-  const handleGenderChange = (newGender) => {
-    setGender(newGender);
-    setSelectedAvatar(null); 
-  };
 
   const setProfilePicture = async () => {
     if (selectedAvatar === null) {
@@ -103,32 +103,6 @@ const SetAvatar = () => {
           </h1>
 
           <div className="flex flex-col items-center mt-11">
-            <div className="flex gap-20 text-lg">
-              <div>
-                <input
-                  type="radio"
-                  id="male"
-                  name="gender"
-                  value="male"
-                  checked={gender === "male"}
-                  onChange={() => handleGenderChange("male")}
-                  className="mx-2"
-                />
-                <label htmlFor="male">Male</label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="female"
-                  name="gender"
-                  value="female"
-                  checked={gender === "female"}
-                  onChange={() => handleGenderChange("female")}
-                  className="mx-2"
-                />
-                <label htmlFor="female">Female</label>
-              </div>
-            </div>
 
             <div className="flex justify-center gap-4 mt-7">
               {avatars.map((avatar, index) => (

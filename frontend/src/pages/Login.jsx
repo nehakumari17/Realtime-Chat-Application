@@ -28,23 +28,20 @@ const Login = () => {
                 localStorage.setItem("token", response.data.token)
                 toast.success("Login successful");
                 dispatch(login({user: userData}))
-                navigate("/chat");
+                if (response.isAvatarImageSet) {navigate("/set-avatar")}
+                navigate("/welcome");
             } else {
-                toast.error("Unexpected response data",{
-                  position: "top-left"
-                });
+                toast.error("Unexpected response data");
             }
         } catch (error) {
-            toast.error("Invalid Login!!",{
-              position: "top-left"
-            })
+            toast.error("Invalid Login!!")
             console.log(error)
         }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-violet-400 to-purple-300 py-12 px-4 sm:px-6 lg:px-8">
-      <Toaster />
+      <Toaster position="top-left"/>
       <div className="p-8 rounded-lg max-w-md w-full shadow-2xl ">
         <div className="flex justify-center items-center">
         <img src={logo} alt="chat app logo" className="w-20 h-auto" />
