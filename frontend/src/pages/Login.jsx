@@ -8,12 +8,12 @@ import { useDispatch } from "react-redux";
 import logo from "/logo.png";
 
 const Login = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [user, setUser] = useState({
-    email: '',
-    password: ''
-  })
+    email: "",
+    password: "",
+  });
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -21,30 +21,32 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-        try {
-            const response = await axios.post(loginRoute, user)
-            if (response.status === 200) {
-                const userData = response.data.user;
-                localStorage.setItem("token", response.data.token)
-                toast.success("Login successful");
-                dispatch(login({user: userData}))
-                if (response.isAvatarImageSet) {navigate("/set-avatar")}
-                navigate("/welcome");
-            } else {
-                toast.error("Unexpected response data");
-            }
-        } catch (error) {
-            toast.error("Invalid Login!!")
-            console.log(error)
+    try {
+      const response = await axios.post(loginRoute, user);
+      if (response.status === 200) {
+        const userData = response.data.user;
+        localStorage.setItem("token", response.data.token);
+        toast.success("Login successful");
+        dispatch(login({ user: userData }));
+        if (response.isAvatarImageSet) {
+          navigate("/set-avatar");
         }
-  }
+        navigate("/welcome");
+      } else {
+        toast.error("Unexpected response data");
+      }
+    } catch (error) {
+      toast.error("Invalid Login!!");
+      console.log(error);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-violet-400 to-purple-300 py-12 px-4 sm:px-6 lg:px-8">
-      <Toaster position="top-left"/>
+      <Toaster position="top-left" />
       <div className="p-8 rounded-lg max-w-md w-full shadow-2xl ">
         <div className="flex justify-center items-center">
-        <img src={logo} alt="chat app logo" className="w-20 h-auto" />
+          <img src={logo} alt="chat app logo" className="w-20 h-auto" />
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
             Login to your account
           </h2>
@@ -90,8 +92,10 @@ const Login = () => {
           </div>
         </form>
         <div className="flex justify-center text-md uppercase mt-2 font-semibold">
-            <span>Don't have an account?</span>
-            <Link to="/register" className="ml-2 ">Register</Link>
+          <span>Don't have an account?</span>
+          <Link to="/register" className="ml-2 ">
+            Register
+          </Link>
         </div>
       </div>
     </div>
