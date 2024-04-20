@@ -53,7 +53,7 @@ const login = async (req, res) => {
             await user.save();
 
             const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, {
-                expiresIn: '15m'
+                expiresIn: '1h'
             });
             res.cookie('token', token, {
                 httpOnly: true,
