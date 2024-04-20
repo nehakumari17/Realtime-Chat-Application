@@ -3,7 +3,7 @@ const messageModel = require("../models/messageModel")
 
 const sendMessage = async (req, res) => {
     try {
-        const senderId = req.params.id
+        const senderId = req.id
         const receiverId = req.params.id
         const {message} = req.body
         let getConversation = await conversationModel.findOne({
@@ -38,7 +38,11 @@ const sendMessage = async (req, res) => {
 const getMessage = async (req, res) => {
     try{
         const receiverId = req.params.id
-        const conversation = await conversationModel.findOne({})
+        const senderId = req.id
+        const conversation = await conversationModel.findOne({
+            participants: {$all: [senderId, receiverId]}
+        }).populate("messages")
+        res.status(200).send(conversation.messages)
     } catch(error) {
         console.log("Error in getting messages..", error)
         res.status(400).send({message: "Error in getting messages"})
@@ -46,5 +50,6 @@ const getMessage = async (req, res) => {
 }
 
 module.exports = {
-    sendMessage
+    sendMessage,
+    getMessage
 }
