@@ -34,22 +34,49 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required." });
+        }
         const user = await userModel.findOne({ email });
+
         if (!user) {
             return res.status(400).json({ message: "No user found. Please register yourself first." });
         }
-        const isComparePassword = bcrypt.compareSync(password, user.password);
-        if (!isComparePassword) {
-            return res.status(400).json({ message: "Invalid login credentials", success: false });
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            await user.save();
+            return res.status(400).json({ message: "Invalid login credentials." });
         } else {
-            const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' })
-            res.status(200).json({ message: "Login successful", success: true, token });
+            user.failedLoginAttempts = 0;
+            await user.save();
+
+            const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, {
+                expiresIn: '15m'
+            });
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict'
+            });
+            return res.status(200).json({
+                message: "Login successful",
+                success: true,
+                user: {
+                    id: user._id,
+                    email: user.email,
+                    username: user.username,
+                    gender: user.gender
+                }
+            });
         }
     } catch (error) {
-        console.error("Error occurred during login", error);
-        return res.status(500).json({ message: "Error occurred during login", success: false });
+        console.error("Error occurred during login:", error);
+        return res.status(500).json({ message: "Error occurred during login.", success: false });
     }
-}
+};
+
 
 const setAvatar = async (req, res) => {
     try {
@@ -88,10 +115,21 @@ const setAvatar = async (req, res) => {
     }
 };
 
+const getOtherUsers = async (req, res) => {
+    try {
+        const logInUserId = req.id
+        const otherUsers = await userModel.find({_id: {$ne: logInUserId}}).select("-password")
+        return res.status(200).send(otherUsers)
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({message: "Error in showing all other users.."})
+    }
+}
 
 
 module.exports = {
     register,
     login,
-    setAvatar
+    setAvatar,
+    getOtherUsers
 }

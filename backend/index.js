@@ -1,7 +1,9 @@
 const express = require("express")
 const connectDb = require("./connection/database")
 const userRoutes = require("./routes/userRoutes")
+const messageRoutes = require("./routes/messageRoute")
 const cors = require("cors")
+const cookieParser = require("cookie-parser")
 const app = express()
 
 const PORT = 3000
@@ -12,6 +14,7 @@ const corsOptions = {
     credentials: true
 }
 
+app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(express.json())
 
@@ -20,6 +23,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api", userRoutes)
+app.use("/api", messageRoutes)
 
 connectDb()
     .then(() => {

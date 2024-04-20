@@ -58,7 +58,6 @@ const SetAvatar = () => {
         return;
     }
     const token = localStorage.getItem("token");
-    console.log("Token:", token);
 
     if (!token) {
         toast.error("Token not found. Please log in again.");
@@ -66,10 +65,7 @@ const SetAvatar = () => {
     }
     try {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded Token:", decodedToken);
-
         const userId = decodedToken.id;
-        console.log("User ID:", userId);
 
         if (!userId) {
             toast.error("User ID not found. Please log in again.");

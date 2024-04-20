@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 import PublicRoute from "./authentication/PublicRoute";
 import ProtectedRoute from "./authentication/ProtectedRoute";
-import SetAvatar from "./pages/SetAvatar";
+import SetAvatar from "./components/SetAvatar";
 import { useDispatch } from "react-redux";
 import { login } from "./authentication/authSlice";
 

@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: true,
-        enum: ['male', 'female', 'other']
+        enum: ['male', 'female']
     },
     isAvatarImageSet: {
         type: Boolean,
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     avatarImage: {
         type: String,
         default: "",
-    },
+    }
 })
 
 module.exports = mongoose.model("User", userSchema)
