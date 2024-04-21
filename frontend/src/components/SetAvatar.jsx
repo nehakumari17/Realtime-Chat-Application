@@ -3,11 +3,11 @@ import toast, { Toaster } from "react-hot-toast";
 import loader from "../assets/loader.gif";
 import axios from "axios";
 import { setAvatarRoute } from "../utils/APIRoute";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 
 const SetAvatar = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const maleApi = "https://avatar.iran.liara.run/public/boy";
   const femaleApi = "https://avatar.iran.liara.run/public/girl";
 
@@ -19,10 +19,8 @@ const SetAvatar = () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-        const decodedToken = jwtDecode(token);
-        const gender = decodedToken.gender;
-        console.log(decodedToken)
-        console.log(gender)
+      const decodedToken = jwtDecode(token);
+      const gender = decodedToken.gender;
       const apiUrl = gender === "male" ? maleApi : femaleApi;
       const promises = Array.from({ length: 4 }, async () => {
         const response = await fetch(apiUrl);
@@ -51,100 +49,77 @@ const SetAvatar = () => {
     return () => clearTimeout(loadingTimeout);
   }, []);
 
-
   const setProfilePicture = async () => {
     if (selectedAvatar === null) {
-        toast.error("Please select an avatar.");
-        return;
+      toast.error("Please select an avatar.");
+      return;
     }
     const token = localStorage.getItem("token");
 
     if (!token) {
-        toast.error("Token not found. Please log in again.");
-        return;
+      toast.error("Token not found. Please log in again.");
+      return;
     }
     try {
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id;
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
 
-        if (!userId) {
-            toast.error("User ID not found. Please log in again.");
-            return;
-        }
-        const { data } = await axios.post(`${setAvatarRoute}/${userId}`, {
-            image: avatars[selectedAvatar]
-        });
-        if (data.isSet) {
-            toast.success("Profile picture set successfully!");
-            navigate("/chat");
-        } else {
-            toast.error("Error setting avatar. Please try again.");
-        }
+      if (!userId) {
+        toast.error("User ID not found. Please log in again.");
+        return;
+      }
+      const { data } = await axios.post(`${setAvatarRoute}/${userId}`, {
+        image: avatars[selectedAvatar],
+      });
+      if (data.isSet) {
+        toast.success("Profile picture set successfully!");
+        navigate("/chat");
+      } else {
+        toast.error("Error setting avatar. Please try again.");
+      }
     } catch (error) {
-        console.error("Error setting profile picture:", error);
-        toast.error("Failed to set profile picture. Please try again later.");
+      console.error("Error setting profile picture:", error);
+      toast.error("Failed to set profile picture. Please try again later.");
     }
-};
-
-
+  };
 
   return (
-    <div className="w-full h-screen" style={{backgroundImage: "linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%)"}}>
-        
+    <div
+      className="w-full h-screen flex flex-col items-center justify-center" style={{backgroundImage: "linear-gradient( 58.2deg,  rgba(40,91,212,0.73) -3%, rgba(171,53,163,0.45) 49.3%, rgba(255,204,112,0.37) 97.7% )"}}
+    >
       <Toaster position="top-left" />
       {isLoading ? (
         <div className="flex justify-center items-center w-screen h-screen bg-black">
           <img src={loader} alt="Loading" />
         </div>
       ) : (
-        <div>
-          <h1 className="flex justify-center font-bold text-3xl pt-28">
-            Pick an avatar as your profile picture
-          </h1>
+        <div className="flex flex-col items-center w-full max-w-lg">
+          <h1 className="font-bold text-3xl text-center">Pick an avatar as your profile picture</h1>
 
-          <div className="flex flex-col items-center mt-11">
-
-            <div className="flex justify-center gap-4 mt-7">
-              {avatars.map((avatar, index) => (
-                <div
-                  key={index}
-                  className={`avatar ${
-                    selectedAvatar === index ? "selected" : ""
-                  }`}
+          <div className="flex flex-wrap justify-center gap-4 mt-7 w-full">
+            {avatars.map((avatar, index) => (
+              <div
+                key={index}
+                className={`avatar ${selectedAvatar === index ? "border-blue-500" : "border-transparent"} border-2 rounded-full p-1 cursor-pointer`}
+                onClick={() => setSelectedAvatar(index)}
+              >
+                <img
+                  src={avatar}
+                  alt="avatar"
+                  style={{ width: "100px", height: "100px" }}
+                  className="rounded-full"
                   onClick={() => setSelectedAvatar(index)}
-                  style={{
-                    margin: "1rem",
-                    border:
-                      selectedAvatar === index ? "2px solid blue" : "none",
-                    borderRadius: "50%",
-                    padding: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <img
-                    src={avatar}
-                    alt="avatar"
-                    key={avatar}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "50%",
-                    }}
-                    onClick={() => setSelectedAvatar(index)}
-                  />
-                </div>
-              ))}
-            </div>
+                />
+              </div>
+            ))}
           </div>
 
-          <div className="flex justify-center items-center mt-7">
-            <button
-              className=" bg-green-400 px-7 py-3 text-lg rounded-full hover:bg-green-500 font-semibold"
-              onClick={setProfilePicture}
-            >
-              Set As Profile Picture
-            </button>
-          </div>
+          <button
+            className="bg-green-400 px-7 py-3 mt-7 text-lg rounded-full hover:bg-green-500 font-semibold"
+            onClick={setProfilePicture}
+          >
+            Set As Profile Picture
+          </button>
         </div>
       )}
     </div>

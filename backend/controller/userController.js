@@ -67,7 +67,8 @@ const login = async (req, res) => {
                     id: user._id,
                     email: user.email,
                     username: user.username,
-                    gender: user.gender
+                    gender: user.gender,
+                    isAvatarImageSet: user.isAvatarImageSet
                 },
                 token
             });
@@ -83,7 +84,6 @@ const setAvatar = async (req, res) => {
     try {
         const userId = req.params.id;
         const {gender} = req.body
-        console.log('User ID from request params:', userId);
         if (!userId) {
             res.status(400).json({ error: 'User ID not found in request.' });
             return;

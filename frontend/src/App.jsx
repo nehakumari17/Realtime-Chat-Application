@@ -15,6 +15,7 @@ import SetAvatar from "./components/SetAvatar";
 import { useDispatch } from "react-redux";
 import { login } from "./authentication/authSlice";
 import Welcome from "./components/Welcome";
+import HomePage from "./components/HomePage";
 
 function App() {
   const dispatch = useDispatch()
@@ -68,6 +69,14 @@ function App() {
           element={
             <ProtectedRoute>
               <SetAvatar />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <HomePage />
             </ProtectedRoute>
           }
         />
